@@ -1,0 +1,113 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build - ${{ matrix.platform.release_for }}
+    strategy:
+      matrix:
+        platform:
+          - release_for: Linux-x86_64
+            os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+            bin: pomo-tui
+            name: pomo-tui-linux-x86_64.tar.gz
+            command: build
+
+          - release_for: Windows-x86_64
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
+            bin: pomo-tui.exe
+            name: pomo-tui-windows-x86_64.zip
+            command: build
+
+          - release_for: macOS-x86_64
+            os: macos-latest
+            target: x86_64-apple-darwin
+            bin: pomo-tui
+            name: pomo-tui-darwin-x86_64.tar.gz
+            command: build
+
+          - release_for: macOS-arm64
+            os: macos-latest
+            target: aarch64-apple-darwin
+            bin: pomo-tui
+            name: pomo-tui-darwin-aarch64.tar.gz
+            command: build
+
+    runs-on: ${{ matrix.platform.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.platform.target }}
+
+      - name: Install Musl Tools (Linux only)
+        if: matrix.platform.target == 'x86_64-unknown-linux-musl'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y musl-tools
+
+      - name: Build Binary
+        run: cargo build --release --target ${{ matrix.platform.target }}
+
+      - name: Package (Unix)
+        if: matrix.platform.os != 'windows-latest'
+        shell: bash
+        run: |
+          cd target/${{ matrix.platform.target }}/release
+          tar czvf ../../../${{ matrix.platform.name }} ${{ matrix.platform.bin }}
+          cd -
+
+      - name: Package (Windows)
+        if: matrix.platform.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          cd target/${{ matrix.platform.target }}/release
+          Compress-Archive -Path ${{ matrix.platform.bin }} -DestinationPath ..\..\..\${{ matrix.platform.name }}
+          cd ..\..\..
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.platform.name }}
+          path: ${{ matrix.platform.name }}
+          if-no-files-found: error
+
+  publish:
+    name: Publish Release with Assets
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+
+      - name: List Files
+        run: ls -R
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            pomo-tui-linux-x86_64.tar.gz/pomo-tui-linux-x86_64.tar.gz
+            pomo-tui-windows-x86_64.zip/pomo-tui-windows-x86_64.zip
+            pomo-tui-darwin-x86_64.tar.gz/pomo-tui-darwin-x86_64.tar.gz
+            pomo-tui-darwin-aarch64.tar.gz/pomo-tui-darwin-aarch64.tar.gz
+          draft: false
+          prerelease: false

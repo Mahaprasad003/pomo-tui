@@ -1,0 +1,53 @@
+[package]
+name = "pomo-tui"
+version = "0.1.0"
+edition = "2021"
+description = "A beautiful, minimal Terminal User Interface Pomodoro timer"
+license = "MIT"
+repository = "https://github.com/yourusername/pomo-tui"
+keywords = ["pomodoro", "timer", "tui", "terminal", "productivity"]
+categories = ["command-line-utilities"]
+readme = "README.md"
+
+[features]
+default = ["notifications"]
+audio = ["dep:rodio"]
+notifications = ["dep:notify-rust"]
+
+[dependencies]
+# TUI Framework
+ratatui = "0.29"
+crossterm = "0.28"
+
+# Large text display for timer
+tui-big-text = "0.7"
+
+# Error handling
+anyhow = "1.0"
+
+# Serialization (for persistence)
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# XDG directories
+dirs = "5.0"
+
+# UUID for session IDs
+uuid = { version = "1.0", features = ["v4", "serde"] }
+
+# Date/time handling
+chrono = { version = "0.4", features = ["serde"] }
+
+# Optional: Desktop notifications
+notify-rust = { version = "4.0", optional = true }
+
+# Optional: Audio playback
+rodio = { version = "0.19", optional = true }
+
+[dev-dependencies]
+pretty_assertions = "1.0"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true

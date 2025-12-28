@@ -22,6 +22,8 @@ pub fn draw(frame: &mut Frame, app: &App) {
     // Draw overlays (always on top, in order of priority)
     if app.input_mode == InputMode::AddingTask {
         draw_input_popup(frame, app, "Add Task");
+    } else if app.input_mode == InputMode::EditingTask {
+        draw_input_popup(frame, app, "Edit Task");
     } else if app.input_mode == InputMode::QuickCapture {
         draw_input_popup(frame, app, "Quick Capture");
     }
@@ -687,6 +689,8 @@ fn draw_footer(frame: &mut Frame, area: Rect, app: &App) {
         Line::from(vec![
             Span::styled("[a]", Style::default().fg(Color::Green).bold()),
             Span::raw(" Add  "),
+            Span::styled("[e]", Style::default().fg(Color::Yellow).bold()),
+            Span::raw(" Edit  "),
             Span::styled("[d]", Style::default().fg(Color::Red).bold()),
             Span::raw(" Del  "),
             Span::styled("[c]", Style::default().fg(Color::Magenta).bold()),
@@ -753,6 +757,7 @@ fn draw_help_overlay(frame: &mut Frame) {
         ("Tab", "Switch pane"),
         ("j / k", "Navigate"),
         ("a", "Add task"),
+        ("e", "Edit task"),
         ("d", "Delete task"),
         ("c", "Clear completed"),
         ("/", "Quick capture"),

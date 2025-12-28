@@ -57,7 +57,7 @@ impl TagStore {
 
     /// Remove tags not used in 30 days
     fn cleanup_old_tags(&mut self) {
-        let cutoff = Utc::now().date_naive() - chrono::Duration::days(30);
+        let cutoff = Utc::now().date_naive() - chrono::Duration::days(7);
         self.tags.retain(|t| t.last_used >= cutoff);
     }
 

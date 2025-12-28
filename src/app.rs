@@ -68,6 +68,7 @@ pub enum CurrentView {
 pub enum InputMode {
     Normal,
     AddingTask,
+    EditingTask,
     QuickCapture,
     SessionNote,
     ConfirmReset,
@@ -344,7 +345,7 @@ impl App {
     fn handle_timer_view_key(&mut self, key: KeyCode) {
         match self.input_mode {
             InputMode::Normal => self.handle_normal_key(key),
-            InputMode::AddingTask | InputMode::QuickCapture => self.handle_input_key(key),
+            InputMode::AddingTask | InputMode::EditingTask | InputMode::QuickCapture => self.handle_input_key(key),
             InputMode::SessionNote => self.handle_session_note_key(key),
             InputMode::ConfirmReset => {
                 self.input_mode = InputMode::Normal;
@@ -441,6 +442,20 @@ impl App {
                 }
             }
 
+            KeyCode::Char('e') | KeyCode::Char('E') => {
+                if (self.active_pane == ActivePane::Tasks || self.focus_mode) && !self.tasks.is_empty() {
+                    let task = &self.tasks[self.selected_task_index];
+                    // Pre-fill buffer: "Name #tag1 #tag2"
+                    self.input_buffer = task.name.clone();
+                    for tag in &task.tags {
+                        self.input_buffer.push_str(" #");
+                        self.input_buffer.push_str(tag);
+                    }
+                    
+                    self.input_mode = InputMode::EditingTask;
+                }
+            }
+
             KeyCode::Char('c') | KeyCode::Char('C') => {
                 if self.active_pane == ActivePane::Tasks || self.focus_mode {
                     // Clear all completed tasks
@@ -484,9 +499,20 @@ impl App {
                         if !tags.is_empty() {
                             self.tag_store.record_usage(&tags);
                         }
-                        let task = Task::with_tags(name, tags);
-                        self.tasks.push(task);
-                        self.selected_task_index = self.tasks.len() - 1;
+
+                        if self.input_mode == InputMode::EditingTask {
+                            // Update existing task
+                             if let Some(task) = self.tasks.get_mut(self.selected_task_index) {
+                                task.name = name;
+                                task.tags = tags;
+                             }
+                        } else {
+                            // Create new task
+                            let task = Task::with_tags(name, tags);
+                            self.tasks.push(task);
+                            self.selected_task_index = self.tasks.len() - 1;
+                        }
+                        
                         self.needs_save = true;
                     }
                 }

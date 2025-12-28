@@ -4,7 +4,7 @@
 
 A beautiful, minimal, and keyboard-driven Pomodoro timer for your terminal. Designed for "Visual Zen" and deep work.
 
-![pomo-tui demo placeholder](https://via.placeholder.com/800x400.png?text=Demo+Available+Soon)
+![pomo-tui demo](./assets/product_image.png)
 
 ## ✨ Features
 

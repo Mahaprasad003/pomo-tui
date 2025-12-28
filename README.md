@@ -19,18 +19,22 @@ A beautiful, minimal, and keyboard-driven Pomodoro timer for your terminal. Desi
 ## 📦 Installation
 
 ### Option 1: Binary Download (Easiest)
-Go to the [Releases Page](https://github.com/yourusername/pomo-tui/releases) and download the file for your OS:
-- **Linux**: `pomo-tui-linux-x86_64.tar.gz` (Static binary, run anywhere)
-- **Windows**: `pomo-tui-windows-x86_64.zip`
-- **macOS**: `pomo-tui-darwin-x86_64.tar.gz` (Intel) or `...-aarch64.tar.gz` (Apple Silicon)
+Go to the [Releases Page](https://github.com/Mahaprasad003/pomo-tui/releases) and download the file for your OS:
+- **Linux**: `pomo-tui-linux-x86_64` (Static binary, run anywhere)
+- **Windows**: `pomo-tui-windows-x86_64.exe`
+- **macOS**: `pomo-tui-darwin-x86_64` (Intel) or `...-aarch64` (Apple Silicon)
 
-Extract the archive and run the executable:
+**Linux / macOS:**
+Make the file executable and run it:
 ```bash
-# Linux/Mac
-./pomo-tui
+chmod +x pomo-tui-linux-x86_64
+./pomo-tui-linux-x86_64
+```
 
-# Windows (PowerShell)
-./pomo-tui.exe
+**Windows:**
+Just double-click `pomo-tui-windows-x86_64.exe` or run it from PowerShell:
+```powershell
+./pomo-tui-windows-x86_64.exe
 ```
 
 ### Option 2: Build from Source (Rustaceans)

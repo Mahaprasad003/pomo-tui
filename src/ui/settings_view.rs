@@ -72,7 +72,8 @@ fn draw_settings_content(frame: &mut Frame, area: Rect, app: &App) {
     let mut lines = Vec::new();
     let all_fields = SettingsField::all();
     let mut current_category: Option<SettingsCategory> = None;
-
+    let mut selected_line_index = 0;
+    
     for field in &all_fields {
         let field_category = field.category();
         
@@ -90,6 +91,9 @@ fn draw_settings_content(frame: &mut Frame, area: Rect, app: &App) {
 
         // Add setting row
         let is_selected = *field == app.selected_setting;
+        if is_selected {
+            selected_line_index = lines.len();
+        }
         lines.push(make_setting_line(field, app, is_selected));
     }
 
@@ -114,8 +118,25 @@ fn draw_settings_content(frame: &mut Frame, area: Rect, app: &App) {
         ),
     ]));
 
+    // Calculate scroll to center selection
+    let visible_height = inner_area.height as usize;
+    let total_lines = lines.len();
+    
+    let scroll_y = if total_lines <= visible_height {
+        // CONTENT FITS: Force static view (no scroll)
+        0
+    } else {
+        // CONTENT OVERFLOWS: Apply smart scrolling
+        if selected_line_index < visible_height / 2 {
+            0
+        } else {
+            (selected_line_index).saturating_sub(visible_height / 2) as u16
+        }
+    };
+
     let settings = Paragraph::new(lines)
-        .block(Block::default().borders(Borders::NONE));
+        .block(Block::default().borders(Borders::NONE))
+        .scroll((scroll_y, 0));
     
     frame.render_widget(settings, inner_area);
 }

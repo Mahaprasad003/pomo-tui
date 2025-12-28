@@ -146,8 +146,6 @@ impl SettingsField {
             Self::HideHintsAfter,
             Self::AutoStartBreaks,
             Self::FocusModeOnStart,
-            Self::AutoStartBreaks,
-            Self::FocusModeOnStart,
             Self::NotificationsEnabled,
             Self::ResetData,
         ]

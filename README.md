@@ -54,10 +54,12 @@ cargo run --release
 | `n` | Skip to next session (Break/Work) |
 | `1` / `2` / `3` | Switch views (Timer / Dashboard / Settings) |
 | `a` | Add new task |
+| `e` | Edit selected task |
 | `d` | Delete selected task |
 | `c` | Clear completed tasks |
 | `/` | Quick capture mode |
 | `f` | Toggle Focus Mode (hides everything but timer) |
+| `?` | Show help menu |
 | `q` | Quit |
 
 ## 🛠 Configuration

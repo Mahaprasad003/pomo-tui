@@ -698,7 +698,9 @@ fn draw_footer(frame: &mut Frame, area: Rect, app: &App) {
             Span::styled("[⏎]", Style::default().fg(Color::Yellow).bold()),
             Span::raw(" Done  "),
             Span::styled("[f]", Style::default().fg(Color::Cyan).bold()),
-            Span::raw(" Focus"),
+            Span::raw(" Focus  "),
+            Span::styled("[?]", Style::default().fg(Color::White).bold()),
+            Span::raw(" Help"),
         ])
     } else {
         Line::from(vec![
@@ -711,7 +713,9 @@ fn draw_footer(frame: &mut Frame, area: Rect, app: &App) {
             Span::styled("[f]", Style::default().fg(Color::Magenta).bold()),
             Span::raw(" Focus  "),
             Span::styled("[/]", Style::default().fg(Color::Blue).bold()),
-            Span::raw(" Quick"),
+            Span::raw(" Quick  "),
+            Span::styled("[?]", Style::default().fg(Color::White).bold()),
+            Span::raw(" Help"),
         ])
     };
 

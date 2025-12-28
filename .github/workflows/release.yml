@@ -45,7 +45,7 @@ jobs:
     runs-on: ${{ matrix.platform.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -74,7 +74,7 @@ jobs:
           Move-Item -Path target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }} -Destination target/${{ matrix.platform.target }}/release/${{ matrix.platform.name }}
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.platform.name }}
           path: target/${{ matrix.platform.target }}/release/${{ matrix.platform.name }}
@@ -88,10 +88,10 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
 
       - name: List Files
         run: ls -R
